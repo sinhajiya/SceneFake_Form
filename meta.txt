@@ -1,0 +1,21 @@
+aud997_dev3  audio1  real
+aud847_dev3  audio8  real
+aud765_dev3  audio20  real
+aud660_dev3  audio4  real
+aud532_dev3  audio7  real
+aud456_dev3  audio2  real
+aud541_dev3  audio13  real
+aud315_dev3  audio12  real
+aud199_dev3  audio16  real
+aud145_dev3.wav audio19  real
+
+audio1087_dev   audio3
+aud1049_dev3_indoor_room audio5 fake
+aud1004_dev3_urban_outdoor audio6 fake
+aud946_dev3_urban_outdoor audio9 fake
+aud801_dev3_nature audio10 fake
+aud750_dev3_Human audio11 fake
+aud696_dev3_urban_outdoor audio14 fake
+aud503_dev3_indoor_room audio15 fake
+aud378_dev3_nature audio17 fake
+aud244_dev3_Human audio18 fake

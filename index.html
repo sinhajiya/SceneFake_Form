@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>SceneFake Perceptual Study</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+<h1>
+  Real or Fake?<br>
+  <span class="subheading">SceneFake Edition</span>
+</h1>
+
+  <p class="subtitle">
+    Focus on background sounds. Ignore speech.
+    Did this actually happen or was it cooked up in Python?
+  </p>
+
+  <form name="scenefake-quiz" method="POST" data-netlify="true">
+
+    <input type="hidden" name="form-name" value="scenefake-quiz">
+    <input type="hidden" id="participant_id" name="participant_id">
+    <input type="hidden" id="scoreField" name="score">
+
+    <div id="audio-container" class="grid"></div>
+
+    <div class="submit-wrapper">
+      <button type="submit">Submit Responses</button>
+    </div>
+
+  </form>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

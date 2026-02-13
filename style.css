@@ -1,0 +1,113 @@
+body {
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  background-color: #ffffff;
+  margin: 0;
+  padding: 0;
+  color: #333;
+}
+
+.container {
+  max-width: 1000px;
+  margin: 50px auto;
+  padding: 30px;
+}
+
+h1 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.subtitle {
+  text-align: center;
+  margin-bottom: 40px;
+  color: #555;
+  font-size: 15px;
+}
+
+/* Grid layout */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+}
+
+/* Audio Card */
+.audio-block {
+  background: #fafafa;
+  border: 1px solid #eee;
+  border-radius: 10px;
+  padding: 20px;
+  transition: box-shadow 0.2s ease;
+}
+
+.audio-block:hover {
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+}
+
+.audio-block h3 {
+  margin-top: 0;
+  font-size: 16px;
+  color: #333;
+}
+
+audio {
+  width: 100%;
+  margin: 10px 0 15px 0;
+}
+
+/* Oval Button Style */
+.button-group {
+  margin-top: 10px;
+}
+
+.oval-btn {
+  display: inline-block;
+  padding: 7px 20px;
+  border-radius: 40px;
+  background-color: #f8d7e1; /* soft pastel pink */
+  color: #8b2f4a;
+  border: none;
+  font-size: 14px;
+  cursor: pointer;
+  margin-right: 10px;
+  transition: all 0.2s ease;
+}
+
+/* Hover */
+.oval-btn:hover {
+  background-color: #f2b8c6;
+}
+
+/* Selected */
+input[type="radio"]:checked + .oval-btn {
+  background-color: #e75480;
+  color: white;
+}
+
+/* Submit button */
+.submit-wrapper {
+  text-align: center;
+  margin-top: 40px;
+}
+
+button[type="submit"] {
+  background-color: #e75480;
+  color: white;
+  border: none;
+  padding: 10px 28px;
+  border-radius: 25px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+button[type="submit"]:hover {
+  background-color: #c9406c;
+}
+
+.subheading {
+  font-size: 16px;
+  font-weight: normal;
+  color: #666;
+}
