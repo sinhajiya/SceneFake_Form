@@ -45,7 +45,7 @@ for (let i = 1; i <= totalFiles; i++) {
     </audio>
 
     <div class="button-group">
-      <input type="radio" id="real${i}" name="audio${i}" value="Real" required hidden>
+      <input type="radio" id="real${i}" name="audio${i}" value="Real" hidden>
       <label for="real${i}" class="oval-btn">Real</label>
 
       <input type="radio" id="fake${i}" name="audio${i}" value="Fake" hidden>
@@ -66,24 +66,45 @@ form.addEventListener("submit", function(e) {
 
   let score = 0;
   let answers = [];
+  let missing = [];
 
-  /* ===== VALIDATE + SCORE ===== */
+  const blocks = document.querySelectorAll(".audio-block");
+
+  /* ===== VALIDATION + SCORING ===== */
   for (let i = 1; i <= totalFiles; i++) {
     const selected = document.querySelector(`input[name="audio${i}"]:checked`);
+    const block = blocks[i - 1];
 
     if (!selected) {
-      alert(`Please answer Audio ${i}`);
-      return;
-    }
+      missing.push(i);
+      block.style.border = "2px solid #e75480";
+    } else {
+      block.style.border = "1px solid #eee";
 
-    const val = selected.value;
-    answers.push(val);
+      const val = selected.value;
+      answers.push(val);
 
-    if (val === correctAnswers[`audio${i}`]) {
-      score++;
+      if (val === correctAnswers[`audio${i}`]) {
+        score++;
+      }
     }
   }
 
+  /* ===== HANDLE MISSING ===== */
+  if (missing.length > 0) {
+    const warningBox = document.getElementById("warningBox");
+    warningBox.style.display = "block";
+    warningBox.innerText = `Please answer all samples. Missing: ${missing.join(", ")}`;
+
+    blocks[missing[0] - 1].scrollIntoView({
+      behavior: "smooth",
+      block: "center"
+    });
+
+    return;
+  }
+
+  /* ===== PREPARE DATA ===== */
   const responseTime = ((Date.now() - startTime) / 1000).toFixed(2);
 
   const data = {
@@ -94,19 +115,20 @@ form.addEventListener("submit", function(e) {
   };
 
   /* ===== SEND TO GOOGLE SHEETS ===== */
-fetch(scriptURL, {
-  method: "POST",
-  mode: "no-cors",   // ⭐ FIX
-  body: JSON.stringify(data),
-  headers: {
-    "Content-Type": "application/json"
-  }
-})
-.then(() => {
-  const percent = ((score / totalFiles) * 100).toFixed(1);
-  window.location.href = `/success.html?score=${score}&percent=${percent}`;
-})
-.catch(err => {
-  console.error("Error:", err);
-  alert("Submission failed. Check console.");
-});});
+  fetch(scriptURL, {
+    method: "POST",
+    mode: "no-cors",
+    body: JSON.stringify(data),
+    headers: {
+      "Content-Type": "application/json"
+    }
+  })
+  .then(() => {
+    const percent = ((score / totalFiles) * 100).toFixed(1);
+    window.location.href = `/success.html?score=${score}&percent=${percent}`;
+  })
+  .catch(err => {
+    console.error("Error:", err);
+    alert("Submission failed. Check console.");
+  });
+});
