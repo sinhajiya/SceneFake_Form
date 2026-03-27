@@ -56,7 +56,7 @@ for (let i = 1; i <= totalFiles; i++) {
 }
 
 /* ===== GOOGLE SHEETS SCRIPT URL ===== */
-const scriptURL = "https://script.google.com/macros/s/AKfycbxu7kjUhr5mE1nrgWXvpzR0rncH-QfzhsfsT63Is8Abphgwr-605DyIR4LaubBZZptp/exec";
+const scriptURL = "https://script.google.com/macros/s/AKfycbyr-LqazWHPYT9FtrTNFGlkdYQZZnWFa01cSMuHsZLzZCdhpe2l2RF7QFaSYpdCy_63/exec";
 
 /* ===== TIMER ===== */
 let startTime = Date.now();
