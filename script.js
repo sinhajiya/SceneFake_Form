@@ -2,13 +2,12 @@ const totalFiles = 20;
 const container = document.getElementById("audio-container");
 const form = document.getElementById("quiz-form");
 
-/* ===== AUTO PARTICIPANT ID ===== */
 function generateID() {
-  return "P-" + Date.now() + "-" + Math.floor(Math.random() * 1000);
+  // return "P-" + Date.now() + "-" + Math.floor(Math.random() * 1000);
+  return "P-" + crypto.randomUUID();
 }
 document.getElementById("participant_id").value = generateID();
 
-/* ===== DEFINE CORRECT ANSWERS ===== */
 const correctAnswers = {
   audio1: "Real",
   audio2: "Real",
@@ -32,7 +31,7 @@ const correctAnswers = {
   audio20: "Real"
 };
 
-/* ===== GENERATE AUDIO BLOCKS ===== */
+
 for (let i = 1; i <= totalFiles; i++) {
   const block = document.createElement("div");
   block.className = "audio-block";
@@ -55,14 +54,13 @@ for (let i = 1; i <= totalFiles; i++) {
   container.appendChild(block);
 }
 
-/* ===== GOOGLE SHEETS SCRIPT URL ===== */
 const scriptURL = "https://script.google.com/macros/s/AKfycbyr-LqazWHPYT9FtrTNFGlkdYQZZnWFa01cSMuHsZLzZCdhpe2l2RF7QFaSYpdCy_63/exec";
 
-/* ===== TIMER ===== */
+
 let startTime = Date.now();
 
-/* ===== FORM SUBMISSION ===== */
-form.addEventListener("submit", async function(e) {
+
+form.addEventListener("submit", function(e) {
   e.preventDefault();
 
   let score = 0;
@@ -71,7 +69,6 @@ form.addEventListener("submit", async function(e) {
 
   const blocks = document.querySelectorAll(".audio-block");
 
-  /* ===== VALIDATION + SCORING ===== */
   for (let i = 1; i <= totalFiles; i++) {
     const selected = document.querySelector(`input[name="audio${i}"]:checked`);
     const block = blocks[i - 1];
@@ -91,7 +88,7 @@ form.addEventListener("submit", async function(e) {
     }
   }
 
-  /* ===== HANDLE MISSING ===== */
+ 
   if (missing.length > 0) {
     const warningBox = document.getElementById("warningBox");
     warningBox.style.display = "block";
@@ -115,33 +112,26 @@ form.addEventListener("submit", async function(e) {
     answers: answers
   };
 
-  /* ===== SUBMIT BUTTON LOCK ===== */
+  
   const submitBtn = form.querySelector("button[type='submit']");
   submitBtn.disabled = true;
   submitBtn.innerText = "Submitting...";
 
-  /* ===== SEND TO GOOGLE SHEETS ===== */
-  try {
-    const res = await fetch(scriptURL, {
-      method: "POST",
-      body: JSON.stringify(data),
-      headers: {
-        "Content-Type": "application/json"
-      }
-    });
-
-    const result = await res.json();
-    console.log("Success:", result);
-
+  fetch(scriptURL, {
+    method: "POST",
+    mode: "no-cors",
+    body: JSON.stringify(data),
+    headers: {
+      "Content-Type": "application/json"
+    }
+  })
+  .then(() => {
     const percent = ((score / totalFiles) * 100).toFixed(1);
-
     window.location.href = `success.html?score=${score}&percent=${percent}`;
-
-  } catch (err) {
-    console.error("Error:", err);
+  })
+  .catch(() => {
     alert("Submission failed. Please try again.");
-
     submitBtn.disabled = false;
     submitBtn.innerText = "Submit Responses";
-  }
+  });
 });
