@@ -116,22 +116,21 @@ form.addEventListener("submit", function(e) {
   const submitBtn = form.querySelector("button[type='submit']");
   submitBtn.disabled = true;
   submitBtn.innerText = "Submitting...";
-
-  fetch(scriptURL, {
-    method: "POST",
-    mode: "no-cors",
-    body: JSON.stringify(data),
-    headers: {
-      "Content-Type": "application/json"
-    }
-  })
-  .then(() => {
-    const percent = ((score / totalFiles) * 100).toFixed(1);
-    window.location.href = `success.html?score=${score}&percent=${percent}`;
-  })
-  .catch(() => {
-    alert("Submission failed. Please try again.");
-    submitBtn.disabled = false;
-    submitBtn.innerText = "Submit Responses";
-  });
+  
+fetch(scriptURL, {
+  method: "POST",
+  mode: "no-cors",   // 🔥 REQUIRED
+  body: JSON.stringify(data),
+  headers: {
+    "Content-Type": "application/json"
+  }
+})
+.then(() => {
+  const percent = ((score / totalFiles) * 100).toFixed(1);
+  window.location.href = `success.html?score=${score}&percent=${percent}`;
+})
+.catch(() => {
+  alert("Submission may have failed");
+  submitBtn.disabled = false;
+  submitBtn.innerText = "Submit Responses";
 });
