@@ -94,21 +94,19 @@ form.addEventListener("submit", function(e) {
   };
 
   /* ===== SEND TO GOOGLE SHEETS ===== */
-  fetch(scriptURL, {
-    method: "POST",
-    body: JSON.stringify(data),
-    headers: { "Content-Type": "application/json" }
-  })
-  .then(res => res.text())
-  .then(text => {
-    console.log("Server response:", text);
-
-    /* ===== REDIRECT WITH SCORE ===== */
-    const percent = ((score / totalFiles) * 100).toFixed(1);
-    window.location.href = `/success.html?score=${score}&percent=${percent}`;
-  })
-  .catch(err => {
-    console.error("Error:", err);
-    alert("Submission failed. Check console.");
-  });
+fetch(scriptURL, {
+  method: "POST",
+  mode: "no-cors",   // ⭐ FIX
+  body: JSON.stringify(data),
+  headers: {
+    "Content-Type": "application/json"
+  }
+})
+.then(() => {
+  const percent = ((score / totalFiles) * 100).toFixed(1);
+  window.location.href = `/success.html?score=${score}&percent=${percent}`;
+})
+.catch(err => {
+  console.error("Error:", err);
+  alert("Submission failed. Check console.");
 });
