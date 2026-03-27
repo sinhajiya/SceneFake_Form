@@ -94,7 +94,8 @@ document.querySelector("form").addEventListener("submit", function(e) {
     body: JSON.stringify(data),
     headers: { "Content-Type": "application/json" }
   })
-  .then(res => res.json())
+  // .then(res => res.json())
+  .then(res => res.text())
   .then(() => {
     window.location.href = "/success";
   })
