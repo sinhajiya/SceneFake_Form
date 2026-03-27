@@ -1,5 +1,6 @@
 const totalFiles = 20;
 const container = document.getElementById("audio-container");
+const form = document.getElementById("quiz-form");
 
 /* ===== AUTO PARTICIPANT ID ===== */
 function generateID() {
@@ -60,12 +61,13 @@ const scriptURL = "https://script.google.com/macros/s/AKfycbxu7kjUhr5mE1nrgWXvpz
 
 let startTime = Date.now();
 
-document.querySelector("form").addEventListener("submit", function(e) {
+form.addEventListener("submit", function(e) {
   e.preventDefault();
 
   let score = 0;
   let answers = [];
 
+  /* ===== VALIDATE + SCORE ===== */
   for (let i = 1; i <= totalFiles; i++) {
     const selected = document.querySelector(`input[name="audio${i}"]:checked`);
 
@@ -74,7 +76,7 @@ document.querySelector("form").addEventListener("submit", function(e) {
       return;
     }
 
-    let val = selected.value;
+    const val = selected.value;
     answers.push(val);
 
     if (val === correctAnswers[`audio${i}`]) {
@@ -82,25 +84,31 @@ document.querySelector("form").addEventListener("submit", function(e) {
     }
   }
 
+  const responseTime = ((Date.now() - startTime) / 1000).toFixed(2);
+
   const data = {
     participant_id: document.getElementById("participant_id").value,
     score: score,
-    response_time: (Date.now() - startTime) / 1000,
+    response_time: responseTime,
     answers: answers
   };
 
+  /* ===== SEND TO GOOGLE SHEETS ===== */
   fetch(scriptURL, {
     method: "POST",
     body: JSON.stringify(data),
     headers: { "Content-Type": "application/json" }
   })
-  // .then(res => res.json())
   .then(res => res.text())
-  .then(() => {
-    window.location.href = "/success";
+  .then(text => {
+    console.log("Server response:", text);
+
+    /* ===== REDIRECT WITH SCORE ===== */
+    const percent = ((score / totalFiles) * 100).toFixed(1);
+    window.location.href = `/success.html?score=${score}&percent=${percent}`;
   })
   .catch(err => {
     console.error("Error:", err);
-    alert("Submission failed. Try again.");
+    alert("Submission failed. Check console.");
   });
 });
