@@ -2,11 +2,12 @@ const totalFiles = 20;
 const container = document.getElementById("audio-container");
 const form = document.getElementById("quiz-form");
 
+
 function generateID() {
-  // return "P-" + Date.now() + "-" + Math.floor(Math.random() * 1000);
   return "P-" + crypto.randomUUID();
 }
 document.getElementById("participant_id").value = generateID();
+
 
 const correctAnswers = {
   audio1: "Real",
@@ -56,9 +57,7 @@ for (let i = 1; i <= totalFiles; i++) {
 
 const scriptURL = "https://script.google.com/macros/s/AKfycbyr-LqazWHPYT9FtrTNFGlkdYQZZnWFa01cSMuHsZLzZCdhpe2l2RF7QFaSYpdCy_63/exec";
 
-
 let startTime = Date.now();
-
 
 form.addEventListener("submit", function(e) {
   e.preventDefault();
@@ -88,7 +87,6 @@ form.addEventListener("submit", function(e) {
     }
   }
 
- 
   if (missing.length > 0) {
     const warningBox = document.getElementById("warningBox");
     warningBox.style.display = "block";
@@ -102,7 +100,6 @@ form.addEventListener("submit", function(e) {
     return;
   }
 
-  /* ===== PREPARE DATA ===== */
   const responseTime = ((Date.now() - startTime) / 1000).toFixed(2);
 
   const data = {
@@ -112,25 +109,26 @@ form.addEventListener("submit", function(e) {
     answers: answers
   };
 
-  
   const submitBtn = form.querySelector("button[type='submit']");
   submitBtn.disabled = true;
   submitBtn.innerText = "Submitting...";
-  
-fetch(scriptURL, {
-  method: "POST",
-  mode: "no-cors",   // 🔥 REQUIRED
-  body: JSON.stringify(data),
-  headers: {
-    "Content-Type": "application/json"
-  }
-})
-.then(() => {
-  const percent = ((score / totalFiles) * 100).toFixed(1);
-  window.location.href = `success.html?score=${score}&percent=${percent}`;
-})
-.catch(() => {
-  alert("Submission may have failed");
-  submitBtn.disabled = false;
-  submitBtn.innerText = "Submit Responses";
+
+ 
+  fetch(scriptURL, {
+    method: "POST",
+    mode: "no-cors",
+    body: JSON.stringify(data),
+    headers: {
+      "Content-Type": "application/json"
+    }
+  })
+  .then(() => {
+    const percent = ((score / totalFiles) * 100).toFixed(1);
+    window.location.href = `success.html?score=${score}&percent=${percent}`;
+  })
+  .catch(() => {
+    alert("Submission may have failed");
+    submitBtn.disabled = false;
+    submitBtn.innerText = "Submit Responses";
+  });
 });
