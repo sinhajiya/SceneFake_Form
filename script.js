@@ -2,13 +2,13 @@ const totalFiles = 20;
 const container = document.getElementById("audio-container");
 const form = document.getElementById("quiz-form");
 
-
+/* ===== AUTO PARTICIPANT ID ===== */
 function generateID() {
   return "P-" + crypto.randomUUID();
 }
 document.getElementById("participant_id").value = generateID();
 
-
+/* ===== DEFINE CORRECT ANSWERS ===== */
 const correctAnswers = {
   audio1: "Real",
   audio2: "Real",
@@ -32,7 +32,7 @@ const correctAnswers = {
   audio20: "Real"
 };
 
-
+/* ===== GENERATE AUDIO BLOCKS ===== */
 for (let i = 1; i <= totalFiles; i++) {
   const block = document.createElement("div");
   block.className = "audio-block";
@@ -55,10 +55,13 @@ for (let i = 1; i <= totalFiles; i++) {
   container.appendChild(block);
 }
 
+/* ===== GOOGLE SHEETS SCRIPT URL ===== */
 const scriptURL = "https://script.google.com/macros/s/AKfycbyr-LqazWHPYT9FtrTNFGlkdYQZZnWFa01cSMuHsZLzZCdhpe2l2RF7QFaSYpdCy_63/exec";
 
+/* ===== TIMER ===== */
 let startTime = Date.now();
 
+/* ===== FORM SUBMISSION ===== */
 form.addEventListener("submit", function(e) {
   e.preventDefault();
 
@@ -68,6 +71,7 @@ form.addEventListener("submit", function(e) {
 
   const blocks = document.querySelectorAll(".audio-block");
 
+  /* ===== VALIDATION + SCORING ===== */
   for (let i = 1; i <= totalFiles; i++) {
     const selected = document.querySelector(`input[name="audio${i}"]:checked`);
     const block = blocks[i - 1];
@@ -87,6 +91,7 @@ form.addEventListener("submit", function(e) {
     }
   }
 
+  /* ===== HANDLE MISSING ===== */
   if (missing.length > 0) {
     const warningBox = document.getElementById("warningBox");
     warningBox.style.display = "block";
@@ -100,6 +105,7 @@ form.addEventListener("submit", function(e) {
     return;
   }
 
+  /* ===== PREPARE DATA ===== */
   const responseTime = ((Date.now() - startTime) / 1000).toFixed(2);
 
   const data = {
@@ -109,14 +115,15 @@ form.addEventListener("submit", function(e) {
     answers: answers
   };
 
+  /* ===== LOCK BUTTON ===== */
   const submitBtn = form.querySelector("button[type='submit']");
   submitBtn.disabled = true;
   submitBtn.innerText = "Submitting...";
 
- 
+  /* ===== SEND TO GOOGLE SHEETS (CORS FIX) ===== */
   fetch(scriptURL, {
     method: "POST",
-    mode: "no-cors",
+    mode: "no-cors", 
     body: JSON.stringify(data),
     headers: {
       "Content-Type": "application/json"
