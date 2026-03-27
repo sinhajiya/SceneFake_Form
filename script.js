@@ -34,39 +34,72 @@ const correctAnswers = {
 
 /* ===== GENERATE AUDIO BLOCKS ===== */
 for (let i = 1; i <= totalFiles; i++) {
-
   const block = document.createElement("div");
   block.className = "audio-block";
-block.innerHTML = `
-  <h3>Audio ${i}</h3>
-  <audio controls>
-    <source src="audio/audio${i}.wav" type="audio/wav">
-  </audio>
 
-  <div class="button-group">
-    <input type="radio" id="real${i}" name="audio${i}" value="Real" required hidden>
-    <label for="real${i}" class="oval-btn">Real</label>
+  block.innerHTML = `
+    <h3>Audio ${i}</h3>
+    <audio controls>
+      <source src="audio/audio${i}.wav" type="audio/wav">
+    </audio>
 
-    <input type="radio" id="fake${i}" name="audio${i}" value="Fake" hidden>
-    <label for="fake${i}" class="oval-btn">Fake</label>
-  </div>
-`;
+    <div class="button-group">
+      <input type="radio" id="real${i}" name="audio${i}" value="Real" required hidden>
+      <label for="real${i}" class="oval-btn">Real</label>
 
+      <input type="radio" id="fake${i}" name="audio${i}" value="Fake" hidden>
+      <label for="fake${i}" class="oval-btn">Fake</label>
+    </div>
+  `;
 
   container.appendChild(block);
 }
 
-/* ===== AUTO SCORING ===== */
-document.querySelector("form").addEventListener("submit", function() {
+/* ===== GOOGLE SHEETS SUBMISSION ===== */
+const scriptURL = "https://script.google.com/macros/s/AKfycbxu7kjUhr5mE1nrgWXvpzR0rncH-QfzhsfsT63Is8Abphgwr-605DyIR4LaubBZZptp/exec";
+
+let startTime = Date.now();
+
+document.querySelector("form").addEventListener("submit", function(e) {
+  e.preventDefault();
 
   let score = 0;
+  let answers = [];
 
   for (let i = 1; i <= totalFiles; i++) {
     const selected = document.querySelector(`input[name="audio${i}"]:checked`);
-    if (selected && selected.value === correctAnswers[`audio${i}`]) {
+
+    if (!selected) {
+      alert(`Please answer Audio ${i}`);
+      return;
+    }
+
+    let val = selected.value;
+    answers.push(val);
+
+    if (val === correctAnswers[`audio${i}`]) {
       score++;
     }
   }
 
-  document.getElementById("scoreField").value = score;
+  const data = {
+    participant_id: document.getElementById("participant_id").value,
+    score: score,
+    response_time: (Date.now() - startTime) / 1000,
+    answers: answers
+  };
+
+  fetch(scriptURL, {
+    method: "POST",
+    body: JSON.stringify(data),
+    headers: { "Content-Type": "application/json" }
+  })
+  .then(res => res.json())
+  .then(() => {
+    window.location.href = "/success";
+  })
+  .catch(err => {
+    console.error("Error:", err);
+    alert("Submission failed. Try again.");
+  });
 });
