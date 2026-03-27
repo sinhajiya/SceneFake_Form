@@ -17,13 +17,13 @@
     Focus on background sounds. Ignore speech.
     Did this actually happen or was it cooked up in Python?
   </p>
-
-  <form name="scenefake-quiz"
+  <!-- <form id="quiz-form"> -->
+  <!-- <form name="scenefake-quiz"
       method="POST"
       data-netlify="true"
-      action="/success">
+      action="/success"> -->
 
-
+<!-- 
     <input type="hidden" name="form-name" value="scenefake-quiz">
     <input type="hidden" id="participant_id" name="participant_id">
     <input type="hidden" id="scoreField" name="score">
@@ -34,8 +34,20 @@
       <button type="submit">Submit Responses</button>
     </div>
 
-  </form>
+  </form> -->
+<form id="quiz-form">
 
+  <input type="hidden" id="participant_id" name="participant_id">
+  <input type="hidden" id="scoreField" name="score">
+
+  <div id="audio-container" class="grid"></div>
+
+  <div class="submit-wrapper">
+    <button type="submit">Submit Responses</button>
+  </div>
+
+</form>
+    
   <!-- Netlify form detection helper -->
 <form name="scenefake-quiz" data-netlify="true" hidden>
   <input type="text" name="participant_id">
