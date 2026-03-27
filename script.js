@@ -6,7 +6,6 @@ const form = document.getElementById("quiz-form");
 function generateID() {
   return "P-" + Date.now() + "-" + Math.floor(Math.random() * 1000);
 }
-
 document.getElementById("participant_id").value = generateID();
 
 /* ===== DEFINE CORRECT ANSWERS ===== */
@@ -56,12 +55,14 @@ for (let i = 1; i <= totalFiles; i++) {
   container.appendChild(block);
 }
 
-/* ===== GOOGLE SHEETS SUBMISSION ===== */
+/* ===== GOOGLE SHEETS SCRIPT URL ===== */
 const scriptURL = "https://script.google.com/macros/s/AKfycbxu7kjUhr5mE1nrgWXvpzR0rncH-QfzhsfsT63Is8Abphgwr-605DyIR4LaubBZZptp/exec";
 
+/* ===== TIMER ===== */
 let startTime = Date.now();
 
-form.addEventListener("submit", function(e) {
+/* ===== FORM SUBMISSION ===== */
+form.addEventListener("submit", async function(e) {
   e.preventDefault();
 
   let score = 0;
@@ -114,21 +115,33 @@ form.addEventListener("submit", function(e) {
     answers: answers
   };
 
+  /* ===== SUBMIT BUTTON LOCK ===== */
+  const submitBtn = form.querySelector("button[type='submit']");
+  submitBtn.disabled = true;
+  submitBtn.innerText = "Submitting...";
+
   /* ===== SEND TO GOOGLE SHEETS ===== */
-  fetch(scriptURL, {
-    method: "POST",
-    mode: "no-cors",
-    body: JSON.stringify(data),
-    headers: {
-      "Content-Type": "application/json"
-    }
-  })
-  .then(() => {
+  try {
+    const res = await fetch(scriptURL, {
+      method: "POST",
+      body: JSON.stringify(data),
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
+
+    const result = await res.json();
+    console.log("Success:", result);
+
     const percent = ((score / totalFiles) * 100).toFixed(1);
-    window.location.href = `/success.html?score=${score}&percent=${percent}`;
-  })
-  .catch(err => {
+
+    window.location.href = `success.html?score=${score}&percent=${percent}`;
+
+  } catch (err) {
     console.error("Error:", err);
-    alert("Submission failed. Check console.");
-  });
+    alert("Submission failed. Please try again.");
+
+    submitBtn.disabled = false;
+    submitBtn.innerText = "Submit Responses";
+  }
 });
